@@ -1,3 +1,5 @@
-FROM node:8
+FROM node:14.15.0
 RUN mkdir /src
 WORKDIR /src
+COPY ./src/frontend/package.json /src
+RUN npm install
