@@ -19,7 +19,7 @@ class UpdateUserView(generics.UpdateAPIView):
     serializer_class = serializers.UserSerializer
 
 
-class GetUserView(generics.RetrieveAPIView):
+class GetUserListView(generics.ListAPIView):
     queryset = User.objects.all()
     serializer_class = serializers.UserSerializer
 
@@ -66,3 +66,13 @@ class MyProfileListView(generics.ListAPIView):
 
     def get_queryset(self):
         return self.queryset.filter(userPro=self.request.user)
+
+
+class MyUserView(generics.ListAPIView):
+    queryset = User.objects.all()
+    serializer_class = serializers.UserSerializer
+    authentication_classes = (authentication.TokenAuthentication,)
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def get_queryset(self):
+        return self.queryset.filter(email=self.request.user)

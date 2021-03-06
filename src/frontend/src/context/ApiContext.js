@@ -5,15 +5,40 @@ export const ApiContext = createContext();
 
 const ApiContextProvider = (props) => {
   const token = props.cookies.get('current-token');
+  const [users, setUsers] = useState([]);
+  const [user, setUser] = useState([]);
+  const [editedUser, setEditedUser] = useState({ id: '', username: '', age: '' });
   const [profile, setProfile] = useState([]);
   const [profiles, setProfiles] = useState([]);
   const [editedProfile, setEditedProfile] = useState({ id: '', nickName: '' });
+  // 自分宛の友達申請リスト
   const [askList, setAskList] = useState([]);
+  // 自分宛、他人宛の友達申請リスト
   const [askListFull, setAskListFull] = useState([]);
   const [inbox, setInbox] = useState([]);
   const [cover, setCover] = useState([]);
 
   useEffect(() => {
+    // 自分のユーザー情報を取得
+    const getUserInfo = async () => {
+      try {
+        const res = await axios.get(`http://localhost:8000/api/user/myuser/`, {
+          headers: {
+            Authorization: `Token ${token}`,
+          },
+        });
+        res.data[0] && setUser(res.data[0]);
+        res.data[0] &&
+          setEditedUser({
+            id: res.data[0].id,
+            username: res.data[0].username,
+            age: res.data[0].age,
+          });
+      } catch {
+        console.log('error');
+      }
+    };
+    // 自分のプロフィールと友達申請リストを取得
     const getMyProfile = async () => {
       try {
         const resmy = await axios.get('http://localhost:8000/api/user/myprofile/', {
@@ -28,11 +53,6 @@ const ApiContextProvider = (props) => {
         });
         resmy.data[0] && setProfile(resmy.data[0]);
         resmy.data[0] &&
-          setEditedProfile({
-            id: resmy.data[0].id,
-            nickName: resmy.data[0].nickName,
-          });
-        resmy.data[0] &&
           setAskList(
             res.data.filter((ask) => {
               return resmy.data[0].userPro === ask.askTo;
@@ -44,6 +64,21 @@ const ApiContextProvider = (props) => {
       }
     };
 
+    // DBにある全てのユーザーリスト取得→友達の友達のみに絞りたい
+    const getUserList = async () => {
+      try {
+        const res = await axios.get('http://localhost:8000/api/user/get/', {
+          headers: {
+            Authorization: `Token ${token}`,
+          },
+        });
+        setUsers(res.data);
+      } catch {
+        console.log('img error');
+      }
+    };
+
+    // DBにある全てのプロフィールリスト取得→友達の友達のみに絞りたい
     const getProfile = async () => {
       try {
         const res = await axios.get('http://localhost:8000/api/user/profile/', {
@@ -53,9 +88,11 @@ const ApiContextProvider = (props) => {
         });
         setProfiles(res.data);
       } catch {
-        console.log('error');
+        console.log('profile error');
       }
     };
+
+    // 自分がreceiverになっているメッセージボックスを取得
     const getInbox = async () => {
       try {
         const res = await axios.get('http://localhost:8000/api/dm/inbox/', {
@@ -68,11 +105,34 @@ const ApiContextProvider = (props) => {
         console.log('error');
       }
     };
+    getUserList();
+    getUserInfo();
     getMyProfile();
     getProfile();
     getInbox();
   }, [token, profile.id]);
 
+  // ユーザー情報を編集する
+  const editUserInfo = async () => {
+    const editData = new FormData();
+    editData.append('username', editedUser.username);
+    editData.append('age', editedUser.age);
+    cover.name && editData.append('img', cover, cover.name);
+
+    try {
+      const res = await axios.put(`http://localhost:8000/api/user/update/${user.id}/`, editData, {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Token ${token}`,
+        },
+      });
+      setUser(res.data[0]);
+    } catch {
+      console.log('error');
+    }
+  };
+
+  // プロフィールを作成する
   const createProfile = async () => {
     const createData = new FormData();
     createData.append('nickName', editedProfile.nickName);
@@ -91,6 +151,7 @@ const ApiContextProvider = (props) => {
     }
   };
 
+  // プロフィールを削除する
   const deleteProfile = async () => {
     try {
       await axios.delete(`http://localhost:8000/api/user/profile/${profile.id}/`, {
@@ -108,6 +169,7 @@ const ApiContextProvider = (props) => {
     }
   };
 
+  // 他人のプロフィールを編集する
   const editProfile = async () => {
     const editData = new FormData();
     // editData.append('nickName', editedProfile.nickName);
@@ -212,6 +274,8 @@ const ApiContextProvider = (props) => {
   return (
     <ApiContext.Provider
       value={{
+        user,
+        users,
         profile,
         profiles,
         cover,
@@ -228,6 +292,9 @@ const ApiContextProvider = (props) => {
         sendDMCont,
         editedProfile,
         setEditedProfile,
+        editUserInfo,
+        editedUser,
+        setEditedUser,
       }}
     >
       {props.children}

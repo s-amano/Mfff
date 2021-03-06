@@ -13,7 +13,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Profile = ({ profileData, askData }) => {
+const Profile = ({ profileData, userData, askData }) => {
   const classes = useStyles();
   const { newRequestFriend, profile } = useContext(ApiContext);
 
@@ -25,8 +25,8 @@ const Profile = ({ profileData, askData }) => {
 
   return (
     <Card style={{ position: 'relative', display: 'flex', marginBottom: 10 }}>
-      {profileData.img ? (
-        <CardMedia style={{ minWidth: 100 }} image={profileData.img} />
+      {userData.img ? (
+        <CardMedia style={{ minWidth: 100 }} image={userData.img} />
       ) : (
         <CardMedia style={{ minWidth: 100 }} image="http://127.0.0.1:8000/media/image/null.png" />
       )}

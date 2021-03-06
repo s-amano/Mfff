@@ -10,7 +10,9 @@ import Main from './components/Main';
 
 const theme = createMuiTheme({
   palette: {
-    primary: indigo,
+    primary: {
+      main: '#009688',
+    },
     secondary: {
       main: '#f44336',
     },
