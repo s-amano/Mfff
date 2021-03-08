@@ -1,31 +1,35 @@
 import React, { useContext } from 'react';
 import { ApiContext } from '../context/ApiContext';
 import Grid from '@material-ui/core/Grid';
-import { GoMail } from 'react-icons/go';
-import { BsFillPeopleFill } from 'react-icons/bs';
+import { BsFillPeopleFill, BsFillPersonPlusFill } from 'react-icons/bs';
 import Profile from './Profile';
 import Ask from './Ask';
 import InboxDM from './InboxDM';
 import UserInfo from './UserInfo';
+import UserInfoEdit from './UserInfoEdit';
 
 const Main = () => {
-  const { users, profiles, profile, askList, askListFull, inbox } = useContext(ApiContext);
+  const {
+    users,
+    profiles,
+    profile,
+    askList,
+    askListFull,
+    inbox,
+    specificProfile,
+    getSpecificProfile,
+    editedProfile,
+  } = useContext(ApiContext);
   const filterProfiles = profiles.filter((prof) => {
     return prof.id !== profile.id;
   });
-  // const getUser = (filprof) => {
-  //   const user = users.filter((user) => {
-  //     return user.id === filprof.id;
-  //   });
-  //   return user[0];
-  //   // console.log(user[0]);
-  // };
 
-  // const con = () => {
-  //   users.find((user) => {
-  //     return user.email === filprof.userPro;
-  //   });
-  // };
+  const setSpecificProfile = (id) => {
+    console.log(id);
+    getSpecificProfile(id);
+    console.log(editedProfile);
+  };
+
   const listProfiles =
     filterProfiles &&
     filterProfiles.map((filprof) => (
@@ -38,6 +42,7 @@ const Main = () => {
         askData={askListFull.filter((ask) => {
           return (filprof.userPro === ask.askFrom) | (filprof.userPro === ask.askTo);
         })}
+        setSpecificProfile={setSpecificProfile}
       />
     ));
   return (
@@ -48,7 +53,7 @@ const Main = () => {
         </div>
         <h3 className="title-ask">
           {' '}
-          <BsFillPeopleFill className="badge" />
+          <BsFillPersonPlusFill className="badge" />
           友達リクエスト
         </h3>
         <div className="app-details">
@@ -77,24 +82,11 @@ const Main = () => {
 
       <Grid item xs={4}>
         <h3>
-          <GoMail className="badge" />
-          DM
+          <BsFillPeopleFill className="badge" />
+          プロフィール詳細
         </h3>
-        <div className="app-dms">
-          <div className="task-list">
-            <ul>
-              {profile.id &&
-                inbox.map((dm) => (
-                  <InboxDM
-                    key={dm.id}
-                    dm={dm}
-                    prof={profiles.filter((item) => {
-                      return item.userPro === dm.sender;
-                    })}
-                  />
-                ))}
-            </ul>
-          </div>
+        <div className="profile-edit">
+          <InboxDM />
         </div>
       </Grid>
     </Grid>
