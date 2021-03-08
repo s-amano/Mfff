@@ -13,9 +13,9 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Profile = ({ profileData, userData, askData }) => {
+const Profile = ({ profileData, userData, askData, setSpecificProfile }) => {
   const classes = useStyles();
-  const { newRequestFriend, profile } = useContext(ApiContext);
+  const { newRequestFriend, profile, getSpecificProfile } = useContext(ApiContext);
 
   const newRequest = () => {
     const askUploadData = new FormData();
@@ -26,12 +26,12 @@ const Profile = ({ profileData, userData, askData }) => {
   return (
     <Card style={{ position: 'relative', display: 'flex', marginBottom: 10 }}>
       {userData.img ? (
-        <CardMedia style={{ minWidth: 100 }} image={userData.img} />
+        <CardMedia style={{ minWidth: 100, flex: 3 }} image={userData.img} />
       ) : (
-        <CardMedia style={{ minWidth: 100 }} image="http://127.0.0.1:8000/media/image/null.png" />
+        <CardMedia style={{ minWidth: 100, flex: 3 }} image="http://127.0.0.1:8000/media/image/null.png" />
       )}
 
-      <CardContent style={{ padding: 5 }}>
+      <CardContent style={{ padding: 5, flex: 4 }}>
         <Typography variant="h6">{profileData.nickName}</Typography>
         <Typography>{profileData.created_on}</Typography>
         {!askData[0] && profile.id ? (
@@ -39,17 +39,28 @@ const Profile = ({ profileData, userData, askData }) => {
             size="small"
             className={classes.button}
             variant="contained"
-            color="primary"
+            color="secondary"
             onClick={() => newRequest()}
           >
-            Ask as friend
+            友達申請
           </Button>
         ) : (
           <Button size="small" className={classes.button} variant="contained" color="primary" disabled>
-            Ask as friend
+            友達申請
           </Button>
         )}
       </CardContent>
+
+      <Button
+        size="small"
+        className={classes.button}
+        variant="contained"
+        color="primary"
+        onClick={() => setSpecificProfile(profileData.userPro)}
+        style={{ flex: 1 }}
+      >
+        プロフィール
+      </Button>
     </Card>
   );
 };

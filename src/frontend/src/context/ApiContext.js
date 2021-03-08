@@ -1,22 +1,25 @@
-import React, { createContext, useState, useEffect } from 'react';
+import React, { createContext, useState, useEffect, useRef, useCallback } from 'react';
+import { useStateIfMounted } from 'use-state-if-mounted';
 import { withCookies } from 'react-cookie';
 import axios from 'axios';
 export const ApiContext = createContext();
 
 const ApiContextProvider = (props) => {
   const token = props.cookies.get('current-token');
-  const [users, setUsers] = useState([]);
-  const [user, setUser] = useState([]);
-  const [editedUser, setEditedUser] = useState({ id: '', username: '', age: '' });
-  const [profile, setProfile] = useState([]);
-  const [profiles, setProfiles] = useState([]);
-  const [editedProfile, setEditedProfile] = useState({ id: '', nickName: '' });
+  const [users, setUsers] = useStateIfMounted([]);
+  const [user, setUser] = useStateIfMounted([]);
+  const [editedUser, setEditedUser] = useStateIfMounted({ id: '', username: '', age: '' });
+  const [profile, setProfile] = useStateIfMounted([]);
+  // 特定のユーザーのプロフィール
+  const [specificProfile, setSpecificProfile] = useStateIfMounted([]);
+  const [profiles, setProfiles] = useStateIfMounted([]);
+  const [editedProfile, setEditedProfile] = useState({ id: '', nickName: '', personality: '' });
   // 自分宛の友達申請リスト
-  const [askList, setAskList] = useState([]);
+  const [askList, setAskList] = useStateIfMounted([]);
   // 自分宛、他人宛の友達申請リスト
-  const [askListFull, setAskListFull] = useState([]);
-  const [inbox, setInbox] = useState([]);
-  const [cover, setCover] = useState([]);
+  const [askListFull, setAskListFull] = useStateIfMounted([]);
+  const [inbox, setInbox] = useStateIfMounted([]);
+  const [cover, setCover] = useStateIfMounted([]);
 
   useEffect(() => {
     // 自分のユーザー情報を取得
@@ -110,7 +113,7 @@ const ApiContextProvider = (props) => {
     getMyProfile();
     getProfile();
     getInbox();
-  }, [token, profile.id]);
+  }, [token, profile]);
 
   // ユーザー情報を編集する
   const editUserInfo = async () => {
@@ -136,7 +139,6 @@ const ApiContextProvider = (props) => {
   const createProfile = async () => {
     const createData = new FormData();
     createData.append('nickName', editedProfile.nickName);
-    // cover.name && createData.append('img', cover, cover.name);
     try {
       const res = await axios.post('http://localhost:8000/api/user/profile/', createData, {
         headers: {
@@ -172,8 +174,7 @@ const ApiContextProvider = (props) => {
   // 他人のプロフィールを編集する
   const editProfile = async () => {
     const editData = new FormData();
-    // editData.append('nickName', editedProfile.nickName);
-    // cover.name && editData.append('img', cover, cover.name);
+    editData.append('nickName', editedProfile.nickName);
     editData.append('personality', editedProfile.nickName);
     try {
       const res = await axios.put(`http://localhost:8000/api/user/profile/${profile.id}/`, editData, {
@@ -188,16 +189,19 @@ const ApiContextProvider = (props) => {
     }
   };
 
-  const getSomeoneProfile = async () => {
+  // 特定のユーザーのプロフィールを取得する
+
+  const getSpecificProfile = async (id) => {
     try {
-      const res = await axios.get(`http://localhost:8000/api/user/profile/${profile.id}/`, {
+      console.log('id');
+      console.log(id);
+      const res = await axios.get(`http://localhost:8000/api/user/profile/${id}/`, {
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Token ${token}`,
         },
       });
-      setProfile(res.data);
-      setEditedProfile({ id: res.data.id, nickName: res.data.nickName });
+      setEditedProfile({ id: res.data.id, nickName: res.data.nickName, personality: res.data.personality });
     } catch {
       console.log('error');
     }
@@ -287,7 +291,6 @@ const ApiContextProvider = (props) => {
         createProfile,
         editProfile,
         deleteProfile,
-        getSomeoneProfile,
         changeApprovalRequest,
         sendDMCont,
         editedProfile,
@@ -295,6 +298,7 @@ const ApiContextProvider = (props) => {
         editUserInfo,
         editedUser,
         setEditedUser,
+        getSpecificProfile,
       }}
     >
       {props.children}
