@@ -8,7 +8,6 @@ import { FiLogOut } from 'react-icons/fi';
 import { withCookies } from 'react-cookie';
 import LogoutButton from './LogoutButton';
 import ProfileIcon from './ProfileIcon';
-import { Button } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({
@@ -31,7 +30,9 @@ const Navbar = (props) => {
         </Typography>
 
         <LogoutButton />
-        <ProfileIcon userImg={user.img} />
+        <Link to="/profile-info" style={{ textDecoration: 'none', color: 'white' }}>
+          <ProfileIcon userImg={user.img} />
+        </Link>
       </Toolbar>
     </AppBar>
   );
