@@ -6,48 +6,19 @@ import Profile from './Profile';
 import Ask from './Ask';
 import InboxDM from './InboxDM';
 import UserInfo from './UserInfo';
-import UserInfoEdit from './UserInfoEdit';
+import Container from '@material-ui/core/Container';
 
 const Main = () => {
-  const {
-    users,
-    profiles,
-    profile,
-    askList,
-    askListFull,
-    inbox,
-    specificProfile,
-    getSpecificProfile,
-    editedProfile,
-  } = useContext(ApiContext);
+  const { users, profiles, profile, askList, askListFull, inbox } = useContext(ApiContext);
+
   const filterProfiles = profiles.filter((prof) => {
     return prof.id !== profile.id;
   });
 
-  const setSpecificProfile = (id) => {
-    console.log(id);
-    getSpecificProfile(id);
-    console.log(editedProfile);
-  };
-
-  const listProfiles =
-    filterProfiles &&
-    filterProfiles.map((filprof) => (
-      <Profile
-        key={filprof.id}
-        userData={users.find((user) => {
-          return user.id === filprof.userPro;
-        })}
-        profileData={filprof}
-        askData={askListFull.filter((ask) => {
-          return (filprof.userPro === ask.askFrom) | (filprof.userPro === ask.askTo);
-        })}
-        setSpecificProfile={setSpecificProfile}
-      />
-    ));
   return (
-    <Grid container>
-      <Grid item xs={4}>
+    <Container maxWidth="md">
+      <Grid container spacing={4}>
+        {/* <Grid item xs={4}>
         <div className="app-details">
           <UserInfo />
         </div>
@@ -72,24 +43,32 @@ const Main = () => {
             </ul>
           </div>
         </div>
-      </Grid>
+      </Grid> */}
 
-      <Grid item xs={4}>
-        <div className="app-profiles">
-          <div className="task-list">{listProfiles}</div>
-        </div>
-      </Grid>
+        {filterProfiles.map((filprof) => (
+          <Profile
+            key={filprof.id}
+            userData={users.find((user) => {
+              return user.id === filprof.userPro;
+            })}
+            profileData={filprof}
+            askData={askListFull.filter((ask) => {
+              return (filprof.userPro === ask.askFrom) | (filprof.userPro === ask.askTo);
+            })}
+          />
+        ))}
 
-      <Grid item xs={4}>
+        {/* <Grid item xs={4}>
         <h3>
           <BsFillPeopleFill className="badge" />
           プロフィール詳細
         </h3>
         <div className="profile-edit">
-          <InboxDM />
+          <UserInfoEdit editedProfile={editedProfile} editedUser={editedUser} />
         </div>
+      </Grid> */}
       </Grid>
-    </Grid>
+    </Container>
   );
 };
 

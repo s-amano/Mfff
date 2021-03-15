@@ -9,12 +9,9 @@ import { CookiesProvider } from 'react-cookie';
 
 const routing = (
   <React.StrictMode>
-    <BrowserRouter>
-      <CookiesProvider>
-        <Route exact path="/" component={Login} />
-        <Route exact path="/profiles" component={App} />
-      </CookiesProvider>
-    </BrowserRouter>
+    <CookiesProvider>
+      <App />
+    </CookiesProvider>
   </React.StrictMode>
 );
 

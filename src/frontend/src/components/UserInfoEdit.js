@@ -10,13 +10,15 @@ import Typography from '@material-ui/core/Typography';
 const UserInfoEdit = ({ editedProfile }) => {
   return (
     <Grid container>
-      <Card>
-        <Typography gutterBottom variant="h5" component="h2">
-          {editedProfile.nickName}
-        </Typography>
-        <Typography variant="body2" color="textSecondary" component="p">
-          {editedProfile.personality}
-        </Typography>
+      <Card style={{ width: '100%' }}>
+        <CardContent style={{ padding: 5 }}>
+          <Typography gutterBottom variant="h5" component="h2">
+            {editedProfile.nickName}
+          </Typography>
+          <Typography variant="body2" color="textSecondary" component="p">
+            {editedProfile.personality}
+          </Typography>
+        </CardContent>
       </Card>
     </Grid>
   );
