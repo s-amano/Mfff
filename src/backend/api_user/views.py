@@ -19,11 +19,6 @@ class UpdateUserView(generics.UpdateAPIView):
     serializer_class = serializers.UserSerializer
 
 
-class GetUserListView(generics.ListAPIView):
-    queryset = User.objects.all()
-    serializer_class = serializers.UserSerializer
-
-
 class FriendRequestViewSet(viewsets.ModelViewSet):
     queryset = FriendRequest.objects.all()
     serializer_class = serializers.FriendRequestSerializer
@@ -56,6 +51,13 @@ class ProfileViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(userPro=self.request.user)
+
+
+class UserViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = serializers.UserSerializer
+    authentication_classes = (authentication.TokenAuthentication,)
+    permission_classes = (permissions.IsAuthenticated, custompermissions.ProfilePermission)
 
 
 class MyProfileListView(generics.ListAPIView):

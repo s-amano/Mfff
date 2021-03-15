@@ -7,6 +7,7 @@ import Ask from './Ask';
 import InboxDM from './InboxDM';
 import UserInfo from './UserInfo';
 import UserInfoEdit from './UserInfoEdit';
+import Container from '@material-ui/core/Container';
 
 const Main = () => {
   const {
@@ -18,15 +19,18 @@ const Main = () => {
     inbox,
     specificProfile,
     getSpecificProfile,
+    getSpecificUser,
     editedProfile,
+    editedUser,
   } = useContext(ApiContext);
+
   const filterProfiles = profiles.filter((prof) => {
     return prof.id !== profile.id;
   });
 
-  const setSpecificProfile = (id) => {
-    console.log(id);
-    getSpecificProfile(id);
+  const setSpecificUserProfile = (userId, proId) => {
+    getSpecificProfile(proId);
+    getSpecificUser(userId);
     console.log(editedProfile);
   };
 
@@ -42,12 +46,13 @@ const Main = () => {
         askData={askListFull.filter((ask) => {
           return (filprof.userPro === ask.askFrom) | (filprof.userPro === ask.askTo);
         })}
-        setSpecificProfile={setSpecificProfile}
+        setSpecificProfile={setSpecificUserProfile}
       />
     ));
   return (
-    <Grid container>
-      <Grid item xs={4}>
+    <Container maxWidth="md">
+      <Grid container spacing={4}>
+        {/* <Grid item xs={4}>
         <div className="app-details">
           <UserInfo />
         </div>
@@ -72,24 +77,24 @@ const Main = () => {
             </ul>
           </div>
         </div>
-      </Grid>
+      </Grid> */}
 
-      <Grid item xs={4}>
-        <div className="app-profiles">
-          <div className="task-list">{listProfiles}</div>
-        </div>
-      </Grid>
+        {/* <Grid item xs={4}> */}
 
-      <Grid item xs={4}>
+        <div className="task-list">{listProfiles}</div>
+      </Grid>
+      {/* </Grid> */}
+
+      {/* <Grid item xs={4}>
         <h3>
           <BsFillPeopleFill className="badge" />
           プロフィール詳細
         </h3>
         <div className="profile-edit">
-          <InboxDM />
+          <UserInfoEdit editedProfile={editedProfile} editedUser={editedUser} />
         </div>
-      </Grid>
-    </Grid>
+      </Grid> */}
+    </Container>
   );
 };
 
