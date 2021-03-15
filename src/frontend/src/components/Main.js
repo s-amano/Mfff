@@ -6,49 +6,15 @@ import Profile from './Profile';
 import Ask from './Ask';
 import InboxDM from './InboxDM';
 import UserInfo from './UserInfo';
-import UserInfoEdit from './UserInfoEdit';
 import Container from '@material-ui/core/Container';
 
 const Main = () => {
-  const {
-    users,
-    profiles,
-    profile,
-    askList,
-    askListFull,
-    inbox,
-    specificProfile,
-    getSpecificProfile,
-    getSpecificUser,
-    editedProfile,
-    editedUser,
-  } = useContext(ApiContext);
+  const { users, profiles, profile, askList, askListFull, inbox } = useContext(ApiContext);
 
   const filterProfiles = profiles.filter((prof) => {
     return prof.id !== profile.id;
   });
 
-  const setSpecificUserProfile = (userId, proId) => {
-    getSpecificProfile(proId);
-    getSpecificUser(userId);
-    console.log(editedProfile);
-  };
-
-  const listProfiles =
-    filterProfiles &&
-    filterProfiles.map((filprof) => (
-      <Profile
-        key={filprof.id}
-        userData={users.find((user) => {
-          return user.id === filprof.userPro;
-        })}
-        profileData={filprof}
-        askData={askListFull.filter((ask) => {
-          return (filprof.userPro === ask.askFrom) | (filprof.userPro === ask.askTo);
-        })}
-        setSpecificProfile={setSpecificUserProfile}
-      />
-    ));
   return (
     <Container maxWidth="md">
       <Grid container spacing={4}>
@@ -79,13 +45,20 @@ const Main = () => {
         </div>
       </Grid> */}
 
-        {/* <Grid item xs={4}> */}
+        {filterProfiles.map((filprof) => (
+          <Profile
+            key={filprof.id}
+            userData={users.find((user) => {
+              return user.id === filprof.userPro;
+            })}
+            profileData={filprof}
+            askData={askListFull.filter((ask) => {
+              return (filprof.userPro === ask.askFrom) | (filprof.userPro === ask.askTo);
+            })}
+          />
+        ))}
 
-        <div className="task-list">{listProfiles}</div>
-      </Grid>
-      {/* </Grid> */}
-
-      {/* <Grid item xs={4}>
+        {/* <Grid item xs={4}>
         <h3>
           <BsFillPeopleFill className="badge" />
           プロフィール詳細
@@ -94,6 +67,7 @@ const Main = () => {
           <UserInfoEdit editedProfile={editedProfile} editedUser={editedUser} />
         </div>
       </Grid> */}
+      </Grid>
     </Container>
   );
 };

@@ -6,6 +6,10 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import { FiLogOut } from 'react-icons/fi';
 import { withCookies } from 'react-cookie';
+import LogoutButton from './LogoutButton';
+import ProfileIcon from './ProfileIcon';
+import { Button } from '@material-ui/core';
+import { Link } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({
   title: {
@@ -14,21 +18,20 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Navbar = (props) => {
+  const { user } = useContext(ApiContext);
+
   const classes = useStyles();
-  const Logout = () => (event) => {
-    props.cookies.remove('current-token');
-    window.location.href = '/';
-  };
   return (
     <AppBar position="static">
       <Toolbar>
         <Typography variant="h5" className={classes.title}>
-          Make friends with friends of friends!!
+          <Link to="/profiles" style={{ textDecoration: 'none', color: 'white' }}>
+            Make friends with friends of friends!!
+          </Link>
         </Typography>
 
-        <button className="signOut" onClick={Logout()}>
-          <FiLogOut />
-        </button>
+        <LogoutButton />
+        <ProfileIcon userImg={user.img} />
       </Toolbar>
     </AppBar>
   );

@@ -5,23 +5,38 @@ import Button from '@material-ui/core/Button';
 import Card from '@material-ui/core/Card';
 import CardMedia from '@material-ui/core/CardMedia';
 import CardContent from '@material-ui/core/CardContent';
+import CardActions from '@material-ui/core/CardActions';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
+import { Link } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({
   button: {
     margin: theme.spacing(1),
+  },
+  cardGrid: {
+    paddingTop: theme.spacing(8),
+    paddingBottom: theme.spacing(8),
   },
   card: {
     height: '100%',
     display: 'flex',
     flexDirection: 'column',
   },
+  cardMedia: {
+    paddingTop: '56.25%',
+  },
+  cardContent: {
+    flexGrow: 1,
+  },
+  cardContent: {
+    flexGrow: 1,
+  },
 }));
 
-const Profile = ({ profileData, userData, askData, setSpecificProfile }) => {
+const Profile = ({ profileData, userData, askData }) => {
   const classes = useStyles();
-  const { newRequestFriend, profile, getSpecificProfile } = useContext(ApiContext);
+  const { newRequestFriend, profile, setSelectedProfile, setSelectedUser } = useContext(ApiContext);
 
   const newRequest = () => {
     const askUploadData = new FormData();
@@ -29,18 +44,26 @@ const Profile = ({ profileData, userData, askData, setSpecificProfile }) => {
     newRequestFriend(askUploadData);
   };
 
+  const CheckUserProfile = (userId, profId) => {
+    setSelectedProfile(profId);
+    setSelectedUser(userId);
+    // window.location.href = '/profile-info';
+  };
+
   return (
-    <Grid xs={12} sm={6} md={4}>
+    <Grid item xs={12} sm={6} md={4}>
       <Card className={classes.card}>
-        {userData.img ? (
-          <CardMedia style={{ minWidth: 100, flex: 3 }} image={userData.img} />
+        {userData && userData.img ? (
+          <CardMedia className={classes.cardMedia} image={userData.img} />
         ) : (
-          <CardMedia style={{ minWidth: 100, flex: 3 }} image="http://127.0.0.1:8000/media/image/null.png" />
+          <CardMedia className={classes.cardMedia} image="http://127.0.0.1:8000/media/image/null.png" />
         )}
 
-        <CardContent style={{ padding: 5, flex: 4 }}>
-          <Typography variant="h6">{profileData.nickName}</Typography>
-          <Typography>{profileData.created_on}</Typography>
+        <CardContent className={classes.cardContent}>
+          <Typography variant="h6">名前: {userData.username}</Typography>
+          <Typography>age: {userData.age}</Typography>
+        </CardContent>
+        <CardActions>
           {!askData[0] && profile.id ? (
             <Button
               size="small"
@@ -56,18 +79,19 @@ const Profile = ({ profileData, userData, askData, setSpecificProfile }) => {
               友達申請
             </Button>
           )}
-        </CardContent>
-
-        <Button
-          size="small"
-          className={classes.button}
-          variant="contained"
-          color="primary"
-          onClick={() => getSpecificProfile(profileData.id)}
-          style={{ flex: 1 }}
-        >
-          プロフィール
-        </Button>
+          <Link to="/profile-info" style={{ textDecoration: 'none' }}>
+            <Button
+              size="small"
+              className={classes.button}
+              variant="contained"
+              color="primary"
+              onClick={() => CheckUserProfile(userData.id, profileData.id)}
+              style={{ flex: 1 }}
+            >
+              プロフィール
+            </Button>
+          </Link>
+        </CardActions>
       </Card>
     </Grid>
   );

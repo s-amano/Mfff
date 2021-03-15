@@ -6,22 +6,46 @@ export const ApiContext = createContext();
 const ApiContextProvider = (props) => {
   const token = props.cookies.get('current-token');
   const [users, setUsers] = useState([]);
+  // 自分のuser情報
   const [user, setUser] = useState([]);
-  const [editedUser, setEditedUser] = useState({ id: '', username: '', img: '', age: '' });
+  const [selectedUser, setSelectedUser] = useState();
   const [profile, setProfile] = useState([]);
   // 特定のユーザーのプロフィール
+  const [selectedProfile, setSelectedProfile] = useState();
   const [profiles, setProfiles] = useState([]);
-  const [editedProfile, setEditedProfile] = useState({ id: '', nickName: '', personality: '' });
   // 自分宛の友達申請リスト
   const [askList, setAskList] = useState([]);
   // 自分宛、他人宛の友達申請リスト
   const [askListFull, setAskListFull] = useState([]);
   const [inbox, setInbox] = useState([]);
   const [cover, setCover] = useState([]);
+  const [showProfile, setShowProfile] = useState({});
+  const [showUser, setShowUser] = useState({});
 
   useEffect(() => {
+    console.log('effect');
     let mounted = true;
-    console.log(profiles);
+
+    // 自分のユーザー情報を取得
+    const getUserInfo = async () => {
+      try {
+        const res = await axios.get(`http://localhost:8000/api/user/myuser/`, {
+          headers: {
+            Authorization: `Token ${token}`,
+          },
+        });
+        res.data[0] && setUser(res.data[0]);
+        // res.data[0] &&
+        // setEditedUser({
+        //   id: res.data[0].id,
+        //   username: res.data[0].username,
+        //   img: res.data[0].img,
+        //   age: res.data[0].age,
+        // });
+      } catch {
+        console.log('error');
+      }
+    };
 
     // 自分のプロフィールと友達申請リストを取得
     const getMyProfile = async () => {
@@ -40,12 +64,12 @@ const ApiContextProvider = (props) => {
           resmy.data[0] && setProfile(resmy.data[0]);
           // プロフィール詳細の初期値
           resmy.data[0] &&
-            setEditedProfile({
-              id: resmy.data[0].id,
-              nickName: resmy.data[0].nickName,
-              personality: resmy.data[0].personality,
-            });
-          resmy.data[0] &&
+            // setEditedProfile({
+            //   id: resmy.data[0].id,
+            //   nickName: resmy.data[0].nickName,
+            //   personality: resmy.data[0].personality,
+            // });
+            resmy.data[0] &&
             setAskList(
               res.data.filter((ask) => {
                 return resmy.data[0].userPro === ask.askTo;
@@ -77,19 +101,15 @@ const ApiContextProvider = (props) => {
 
     // DBにある全てのプロフィールリスト取得→友達の友達のみに絞りたい
     const getProfile = async () => {
-      console.log(profiles);
       try {
         const res = await axios.get('http://localhost:8000/api/user/profile/', {
           headers: {
             Authorization: `Token ${token}`,
           },
         });
-        console.log(res.data);
-        console.log(profiles);
+
         if (mounted) {
-          console.log(profiles);
           res.data && setProfiles(res.data);
-          console.log(profiles);
         }
       } catch {
         console.log('profile error');
@@ -109,71 +129,79 @@ const ApiContextProvider = (props) => {
     //     console.log('error');
     //   }
     // };
+
+    // 特定のユーザーのユーザー情報とプロフィールを取得する
+
+    const getSpecificUserProfileInfo = async () => {
+      try {
+        console.log('user try');
+        const resUser = await axios.get(`http://localhost:8000/api/user/user/${selectedUser}/`, {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Token ${token}`,
+          },
+        });
+        const resPro = await axios.get(`http://localhost:8000/api/user/profile/${selectedProfile}/`, {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Token ${token}`,
+          },
+        });
+
+        if (mounted) {
+          setShowProfile(resPro.data);
+          setShowUser(resUser.data);
+        }
+      } catch {
+        console.log('error');
+      }
+    };
+
+    getUserInfo();
     getUserList();
     getMyProfile();
     getProfile();
-
+    getSpecificUserProfileInfo();
     return () => (mounted = false);
-  }, [token]);
+  }, [token, selectedUser]);
 
-  // 自分のユーザー情報を取得
-  const getUserInfo = async () => {
-    try {
-      const res = await axios.get(`http://localhost:8000/api/user/myuser/`, {
-        headers: {
-          Authorization: `Token ${token}`,
-        },
-      });
-      res.data[0] && setUser(res.data[0]);
-      res.data[0] &&
-        setEditedUser({
-          id: res.data[0].id,
-          username: res.data[0].username,
-          img: res.data[0].img,
-          age: res.data[0].age,
-        });
-    } catch {
-      console.log('error');
-    }
-  };
+  // // ユーザー情報を編集する
+  // const editUserInfo = async () => {
+  //   const editData = new FormData();
+  //   editData.append('username', editedUser.username);
+  //   editData.append('age', editedUser.age);
+  //   cover.name && editData.append('img', cover, cover.name);
 
-  // ユーザー情報を編集する
-  const editUserInfo = async () => {
-    const editData = new FormData();
-    editData.append('username', editedUser.username);
-    editData.append('age', editedUser.age);
-    cover.name && editData.append('img', cover, cover.name);
+  //   try {
+  //     const res = await axios.put(`http://localhost:8000/api/user/update/${user.id}/`, editData, {
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //         Authorization: `Token ${token}`,
+  //       },
+  //     });
+  //     setUser(res.data[0]);
+  //   } catch {
+  //     console.log('error');
+  //   }
+  // };
 
-    try {
-      const res = await axios.put(`http://localhost:8000/api/user/update/${user.id}/`, editData, {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Token ${token}`,
-        },
-      });
-      setUser(res.data[0]);
-    } catch {
-      console.log('error');
-    }
-  };
-
-  // プロフィールを作成する
-  const createProfile = async () => {
-    const createData = new FormData();
-    createData.append('nickName', editedProfile.nickName);
-    try {
-      const res = await axios.post('http://localhost:8000/api/user/profile/', createData, {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Token ${token}`,
-        },
-      });
-      setProfile(res.data);
-      setEditedProfile({ id: res.data.id, nickName: res.data.nickName });
-    } catch {
-      console.log('error');
-    }
-  };
+  // // プロフィールを作成する
+  // const createProfile = async () => {
+  //   const createData = new FormData();
+  //   createData.append('nickName', editedProfile.nickName);
+  //   try {
+  //     const res = await axios.post('http://localhost:8000/api/user/profile/', createData, {
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //         Authorization: `Token ${token}`,
+  //       },
+  //     });
+  //     setProfile(res.data);
+  //     setEditedProfile({ id: res.data.id, nickName: res.data.nickName });
+  //   } catch {
+  //     console.log('error');
+  //   }
+  // };
 
   // プロフィールを削除する
   const deleteProfile = async () => {
@@ -186,71 +214,30 @@ const ApiContextProvider = (props) => {
       });
       setProfiles(profiles.filter((dev) => dev.id !== profile.id));
       setProfile([]);
-      setEditedProfile({ id: '', nickName: '' });
+      // setEditedProfile({ id: '', nickName: '' });
       setAskList([]);
     } catch {
       console.log('error');
     }
   };
 
-  // 他人のプロフィールを編集する
-  const editProfile = async () => {
-    const editData = new FormData();
-    editData.append('nickName', editedProfile.nickName);
-    editData.append('personality', editedProfile.personality);
-    try {
-      const res = await axios.put(`http://localhost:8000/api/user/profile/${profile.id}/`, editData, {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Token ${token}`,
-        },
-      });
-      setEditedProfile(res.data);
-    } catch {
-      console.log('error');
-    }
-  };
-
-  // 特定のユーザーのプロフィールを取得する
-
-  const getSpecificProfile = async (id) => {
-    try {
-      console.log('id');
-      console.log(id);
-      const res = await axios.get(`http://localhost:8000/api/user/profile/${id}/`, {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Token ${token}`,
-        },
-      });
-      setEditedProfile({ id: res.data.id, nickName: res.data.nickName, personality: res.data.personality });
-    } catch {
-      console.log('error');
-    }
-  };
-
-  // 特定のユーザーのユーザー情報取得する
-
-  const getSpecificUser = async (id) => {
-    try {
-      console.log('id');
-      console.log(id);
-      const res = await axios.get(`http://localhost:8000/api/user/user/${id}/`, {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Token ${token}`,
-        },
-      });
-      setEditedUser({
-        id: res.data[0].id,
-        username: res.data[0].username,
-        img: res.data[0].img,
-        age: res.data[0].age,
-      });
-    } catch {
-      console.log('error');
-    }
-  };
+  // // 他人のプロフィールを編集する
+  // const editProfile = async () => {
+  //   const editData = new FormData();
+  //   editData.append('nickName', editedProfile.nickName);
+  //   editData.append('personality', editedProfile.personality);
+  //   try {
+  //     const res = await axios.put(`http://localhost:8000/api/user/profile/${profile.id}/`, editData, {
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //         Authorization: `Token ${token}`,
+  //       },
+  //     });
+  //     setEditedProfile(res.data);
+  //   } catch {
+  //     console.log('error');
+  //   }
+  // };
 
   const newRequestFriend = async (askData) => {
     try {
@@ -333,18 +320,24 @@ const ApiContextProvider = (props) => {
         askListFull,
         inbox,
         newRequestFriend,
-        createProfile,
-        editProfile,
+        // createProfile,
+        // editProfile,
         deleteProfile,
         changeApprovalRequest,
         sendDMCont,
-        editedProfile,
-        setEditedProfile,
-        editUserInfo,
-        editedUser,
-        setEditedUser,
-        getSpecificProfile,
-        getSpecificUser,
+        // editedProfile,
+        // setEditedProfile,
+        // editUserInfo,
+        // editedUser,
+        // setEditedUser,
+        // getSpecificProfile,
+        // getSpecificUser,
+        selectedProfile,
+        selectedUser,
+        setSelectedProfile,
+        setSelectedUser,
+        showProfile,
+        showUser,
       }}
     >
       {props.children}
