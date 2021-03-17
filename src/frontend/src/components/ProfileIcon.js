@@ -10,14 +10,6 @@ const ProfileIcon = ({ userImg }) => {
     setSelectedUser(userId);
   };
   return (
-    // <button className="Icon" onClick={CheckProfileInfo()}>
-    //   {userImg ? (
-    //     <Avatar alt="profile icon" src={userImg} />
-    //   ) : (
-    //     <Avatar alt="profile icon" src="http://127.0.0.1:8000/media/image/null.png" />
-    //   )}
-    // </button>
-
     <Button size="small" className="Icon" onClick={() => CheckUserProfile(user.id, profile.id)} style={{ flex: 1 }}>
       <Avatar alt="profile icon" src={userImg} />
     </Button>

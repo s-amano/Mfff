@@ -221,23 +221,25 @@ const ApiContextProvider = (props) => {
     }
   };
 
-  // // 他人のプロフィールを編集する
-  // const editProfile = async () => {
-  //   const editData = new FormData();
-  //   editData.append('nickName', editedProfile.nickName);
-  //   editData.append('personality', editedProfile.personality);
-  //   try {
-  //     const res = await axios.put(`http://localhost:8000/api/user/profile/${profile.id}/`, editData, {
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //         Authorization: `Token ${token}`,
-  //       },
-  //     });
-  //     setEditedProfile(res.data);
-  //   } catch {
-  //     console.log('error');
-  //   }
-  // };
+  // 他人のプロフィールを編集する
+  const editProfile = async () => {
+    const editData = new FormData();
+    editData.append('nickName', showProfile.nickName);
+    editData.append('personality', showProfile.personality);
+    try {
+      const res = await axios.put(`http://localhost:8000/api/user/profile/${showProfile.id}/`, editData, {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Token ${token}`,
+        },
+      });
+      setShowProfile(res.data);
+      return true;
+    } catch {
+      console.log('error');
+      return false;
+    }
+  };
 
   const newRequestFriend = async (askData) => {
     try {
@@ -338,6 +340,8 @@ const ApiContextProvider = (props) => {
         setSelectedUser,
         showProfile,
         showUser,
+        setShowProfile,
+        editProfile,
       }}
     >
       {props.children}
