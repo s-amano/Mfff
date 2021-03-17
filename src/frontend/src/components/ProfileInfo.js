@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { ApiContext } from '../context/ApiContext';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
@@ -8,6 +8,7 @@ import Avatar from '@material-ui/core/Avatar';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
+import TextField from '@material-ui/core/TextField';
 
 const useStyles = makeStyles((theme) => ({
   title: {
@@ -25,19 +26,35 @@ const useStyles = makeStyles((theme) => ({
     height: '128px',
     width: '128px',
   },
+  form: {
+    width: '100%',
+    marginTop: theme.spacing(1),
+  },
 }));
 
 const ProfileInfo = () => {
-  const { showUser, showProfile } = useContext(ApiContext);
+  const [editing, setEditing] = useState(true);
+  // const [personality, setPersonality] = useState('');
+  const { user, profile, showUser, showProfile, setShowProfile, editProfile } = useContext(ApiContext);
+
+  const updateShowProfile = () => (event) => {
+    setShowProfile({
+      ...showProfile,
+      personality: event.target.value,
+    });
+  };
+
+  const saveEditProfile = () => {
+    if (editProfile()) {
+      setEditing(true);
+    } else {
+      console.log('保存に失敗');
+    }
+  };
 
   const classes = useStyles();
   return (
     <>
-      {/* <AppBar position="static">
-        <Toolbar className={classes.toolbar}>
-          <ProfileIcon userImg={'http://127.0.0.1:8000/media/image/null.png'} />
-        </Toolbar>
-      </AppBar> */}
       <Container style={{ marginTop: '20px' }} maxWidth="md">
         <Grid container spacing={4} style={{ flexDirection: 'row' }} alignItems="center">
           <Grid item xs={2}>
@@ -49,9 +66,15 @@ const ProfileInfo = () => {
             <Typography variant="h6">{showUser.age}</Typography>
           </Grid>
           <Grid item xs={3}>
-            <Button size="large" variant="contained" color="secondary" disabled>
-              編集する
-            </Button>
+            {user.id === showUser.id ? (
+              <Button size="large" variant="contained" color="secondary" disabled>
+                編集する
+              </Button>
+            ) : (
+              <Button size="large" variant="contained" color="secondary" onClick={() => setEditing(false)}>
+                編集する
+              </Button>
+            )}
           </Grid>
         </Grid>
         <Grid container style={{ flexDirection: 'row', marginTop: '30px' }}>
@@ -60,11 +83,27 @@ const ProfileInfo = () => {
               パーソナリティー
             </Typography>
           </Grid>
-          <Grid container>
-            <Typography style={{ marginTop: '30px' }} variant="h6">
-              {showProfile.personality}
-            </Typography>
-          </Grid>
+          <form className={classes.form} noValidate>
+            <Grid container>
+              {editing ? (
+                <Typography style={{ marginTop: '30px' }} variant="h6">
+                  {showProfile.personality}
+                </Typography>
+              ) : (
+                <>
+                  <TextField
+                    style={{ width: '100%' }}
+                    label="編集"
+                    multiline
+                    rows={20}
+                    value={showProfile.personality}
+                    onChange={updateShowProfile()}
+                  />
+                  <Button onClick={() => saveEditProfile()}>保存する</Button>
+                </>
+              )}
+            </Grid>
+          </form>
         </Grid>
       </Container>
     </>
