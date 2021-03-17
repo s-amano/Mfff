@@ -3,9 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="65e0d77f-f446-457a-920d-a8e921c20859" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/frontend/src/components/ProfileIcon.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/frontend/src/components/ProfileIcon.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/frontend/src/components/ProfileInfo.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/frontend/src/components/ProfileInfo.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/frontend/src/context/ApiContext.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/frontend/src/context/ApiContext.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/frontend/src/App.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/frontend/src/App.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/frontend/src/components/Navbar.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/frontend/src/components/Navbar.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
