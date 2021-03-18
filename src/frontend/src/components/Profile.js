@@ -36,18 +36,14 @@ const useStyles = makeStyles((theme) => ({
 
 const Profile = ({ profileData, userData, askData }) => {
   const classes = useStyles();
-  const { newRequestFriend, profile, setSelectedProfile, setSelectedUser } = useContext(ApiContext);
+  const { newRequestFriend, profile, setSelectedProfile, setSelectedUser, getSpecificUserProfileInfo } = useContext(
+    ApiContext
+  );
 
   const newRequest = () => {
     const askUploadData = new FormData();
     askUploadData.append('askTo', profileData.userPro);
     newRequestFriend(askUploadData);
-  };
-
-  const CheckUserProfile = (userId, profId) => {
-    setSelectedProfile(profId);
-    setSelectedUser(userId);
-    // window.location.href = '/profile-info';
   };
 
   return (
@@ -85,7 +81,7 @@ const Profile = ({ profileData, userData, askData }) => {
               className={classes.button}
               variant="contained"
               color="primary"
-              onClick={() => CheckUserProfile(userData.id, profileData.id)}
+              onClick={() => getSpecificUserProfileInfo(userData.id, profileData.id)}
               style={{ flex: 1 }}
             >
               プロフィール

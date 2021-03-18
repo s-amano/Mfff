@@ -57,14 +57,14 @@ class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = serializers.UserSerializer
     authentication_classes = (authentication.TokenAuthentication,)
-    permission_classes = (permissions.IsAuthenticated, custompermissions.ProfilePermission)
+    permission_classes = (permissions.IsAuthenticated,)
 
 
 class MyProfileListView(generics.ListAPIView):
     queryset = Profile.objects.all()
     serializer_class = serializers.ProfileSerializer
     authentication_classes = (authentication.TokenAuthentication,)
-    permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = (permissions.IsAuthenticated, custompermissions.ProfilePermission)
 
     def get_queryset(self):
         return self.queryset.filter(userPro=self.request.user)
