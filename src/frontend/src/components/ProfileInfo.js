@@ -9,10 +9,29 @@ import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
+import { IconButton } from '@material-ui/core';
+import { MdAddAPhoto } from 'react-icons/md';
 
 const useStyles = makeStyles((theme) => ({
   title: {
     flexGrow: 1,
+  },
+  imageWrapper: {
+    textAlign: 'center',
+    position: 'relative',
+    '& button': {
+      position: 'absolute',
+      top: '80%',
+      left: '70%',
+    },
+  },
+  userIcon: {
+    height: '128px',
+    width: '128px',
+    ojectFit: 'cover',
+    maxWidth: '100%',
+    borderRadius: '50%',
+    backgroundColor: 'white',
   },
   toolbar: {
     minHeight: 128,
@@ -21,10 +40,6 @@ const useStyles = makeStyles((theme) => ({
     paddingBottom: theme.spacing(2),
     backgroundColor: '#8d69af',
     filter: 'blur(10px)',
-  },
-  profIcon: {
-    height: '128px',
-    width: '128px',
   },
   form: {
     width: '100%',
@@ -35,6 +50,8 @@ const useStyles = makeStyles((theme) => ({
 const ProfileInfo = () => {
   const {
     user,
+    cover,
+    setCover,
     profile,
     showUser,
     showProfile,
@@ -87,13 +104,37 @@ const ProfileInfo = () => {
     }
   };
 
+  const handleEditPicture = () => {
+    const fileInput = document.getElementById('imageInput');
+    fileInput.click();
+  };
+
   const classes = useStyles();
   return (
     <>
       <Container style={{ marginTop: '20px' }} maxWidth="md">
         <Grid container spacing={4} style={{ flexDirection: 'row' }} alignItems="center">
-          <Grid item xs={2}>
-            <Avatar className={classes.profIcon} alt="profile icon" src={showUser.img} />
+          <Grid item xs={2} className="imageWrapper">
+            <Avatar className={classes.userIcon} alt="user icon" src={showUser.img} />
+            {user.id === showUser.id ? (
+              <>
+                <input
+                  type="file"
+                  id="imageInput"
+                  hidden="hidden"
+                  onChange={(event) => {
+                    setCover(event.target.files[0]);
+                    event.target.value = '';
+                    editUserInfo();
+                  }}
+                />
+                <IconButton onClick={handleEditPicture}>
+                  <MdAddAPhoto className="photo" />
+                </IconButton>
+              </>
+            ) : (
+              <></>
+            )}
           </Grid>
 
           <Grid item xs={7}>

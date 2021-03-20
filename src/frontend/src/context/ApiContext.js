@@ -35,13 +35,6 @@ const ApiContextProvider = (props) => {
           },
         });
         res.data[0] && setUser(res.data[0]);
-        // res.data[0] &&
-        // setEditedUser({
-        //   id: res.data[0].id,
-        //   username: res.data[0].username,
-        //   img: res.data[0].img,
-        //   age: res.data[0].age,
-        // });
       } catch {
         console.log('error');
       }
@@ -64,12 +57,6 @@ const ApiContextProvider = (props) => {
           resmy.data[0] && setProfile(resmy.data[0]);
           // プロフィール詳細の初期値
           resmy.data[0] &&
-            // setEditedProfile({
-            //   id: resmy.data[0].id,
-            //   nickName: resmy.data[0].nickName,
-            //   personality: resmy.data[0].personality,
-            // });
-            resmy.data[0] &&
             setAskList(
               res.data.filter((ask) => {
                 return resmy.data[0].userPro === ask.askTo;
