@@ -9,7 +9,7 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = get_user_model()
         fields = ('id', 'email', 'password', 'username', 'age', 'img')
-        extra_kwargs= {'password': {'write_only': True},}
+        extra_kwargs = {'password': {'write_only': True}, }
 
     def create(self, validated_data):
         user = get_user_model().objects.create_user(**validated_data)
@@ -22,7 +22,7 @@ class ProfileSerializer(serializers.ModelSerializer):
     created_on = serializers.DateTimeField(format="%Y-%m-%d", read_only=True)
 
     class Meta:
-        model=Profile
+        model = Profile
         fields = ('id', 'nickName', 'personality', 'userPro', 'created_on', )
         extra_kwargs = {'userPro': {'read_only': True}}
 
@@ -30,5 +30,6 @@ class ProfileSerializer(serializers.ModelSerializer):
 class FriendRequestSerializer(serializers.ModelSerializer):
     class Meta:
         model = FriendRequest
-        fields = ('id','askFrom','askTo','approved')
-        extra_kwargs = {'askFrom': {'read_only': True}}
+        fields = ('id', 'askFrom', 'askTo', 'approved')
+        extra_kwargs = {'askFrom': {'read_only': True},
+                        'askTo': {'read_only': True}, }

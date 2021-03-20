@@ -11,6 +11,7 @@ import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import { IconButton } from '@material-ui/core';
 import { MdAddAPhoto } from 'react-icons/md';
+import AvatarGroup from '@material-ui/lab/AvatarGroup';
 
 const useStyles = makeStyles((theme) => ({
   title: {
@@ -50,6 +51,7 @@ const useStyles = makeStyles((theme) => ({
 const ProfileInfo = () => {
   const {
     user,
+    users,
     cover,
     setCover,
     profile,
@@ -61,6 +63,7 @@ const ProfileInfo = () => {
     setShowUser,
     setSelectedUser,
     getSpecificUserProfileInfo,
+    friends,
   } = useContext(ApiContext);
 
   const [profileEditing, setProfileEditing] = useState(false);
@@ -137,7 +140,7 @@ const ProfileInfo = () => {
             )}
           </Grid>
 
-          <Grid item xs={7}>
+          <Grid item xs={6}>
             {userEditing ? (
               <>
                 <TextField
@@ -160,7 +163,14 @@ const ProfileInfo = () => {
               </>
             )}
           </Grid>
-          <Grid item xs={3}>
+          <Grid item xs={2}>
+            <AvatarGroup max={4}>
+              {friends.map((friend) => (
+                <Avatar key={friend.id} src={'http://localhost:8000' + friend.img} />
+              ))}
+            </AvatarGroup>
+          </Grid>
+          <Grid item xs={2}>
             {user.id === showUser.id ? (
               <Button size="large" variant="contained" color="secondary" onClick={() => setUserEditing(!userEditing)}>
                 編集する

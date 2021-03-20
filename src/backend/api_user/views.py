@@ -1,11 +1,12 @@
 from django.shortcuts import render
 from rest_framework import generics, authentication, permissions
+# from django_filters import rest_framework as filters
 from api_user import serializers
 from core.models import User, Profile, FriendRequest
 from django.db.models import Q
 from rest_framework import viewsets
 from rest_framework.exceptions import ValidationError
-from rest_framework import status
+from rest_framework import status, views
 from rest_framework.response import Response
 from core import custompermissions
 
@@ -42,12 +43,35 @@ class FriendRequestViewSet(viewsets.ModelViewSet):
         response = {'message': 'Patch is not allowed !'}
         return Response(response, status=status.HTTP_400_BAD_REQUEST)
 
+# class UserFilter(filters.FilterSet):
+#     class Meta:
+#         model= User
+
+
+class FriendList(views.APIView):
+
+    def get(self, request, format=None, **kwargs):
+        userId = self.kwargs['pk']
+
+        querysetFriend = FriendRequest.objects.filter(
+            approved=True, askFrom__id=userId)
+
+        lst = [friend.askTo for friend in querysetFriend]
+
+        querysetUser = User.objects.filter(email__in=lst)
+
+        serializer = serializers.UserSerializer(
+            instance=querysetUser, many=True)
+
+        return Response(serializer.data)
+
 
 class ProfileViewSet(viewsets.ModelViewSet):
     queryset = Profile.objects.all()
     serializer_class = serializers.ProfileSerializer
     authentication_classes = (authentication.TokenAuthentication,)
-    permission_classes = (permissions.IsAuthenticated, custompermissions.ProfilePermission)
+    permission_classes = (permissions.IsAuthenticated,
+                          custompermissions.ProfilePermission)
 
     def perform_create(self, serializer):
         serializer.save(userPro=self.request.user)
@@ -64,7 +88,8 @@ class MyProfileListView(generics.ListAPIView):
     queryset = Profile.objects.all()
     serializer_class = serializers.ProfileSerializer
     authentication_classes = (authentication.TokenAuthentication,)
-    permission_classes = (permissions.IsAuthenticated, custompermissions.ProfilePermission)
+    permission_classes = (permissions.IsAuthenticated,
+                          custompermissions.ProfilePermission)
 
     def get_queryset(self):
         return self.queryset.filter(userPro=self.request.user)

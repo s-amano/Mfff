@@ -17,6 +17,8 @@ const ApiContextProvider = (props) => {
   const [askList, setAskList] = useState([]);
   // 自分宛、他人宛の友達申請リスト
   const [askListFull, setAskListFull] = useState([]);
+  // 友達のuser情報
+  const [friends, setFriends] = useState([]);
   const [inbox, setInbox] = useState([]);
   const [cover, setCover] = useState([]);
   const [showProfile, setShowProfile] = useState({});
@@ -140,11 +142,43 @@ const ApiContextProvider = (props) => {
           Authorization: `Token ${token}`,
         },
       });
+      const resFriend = await axios.get(`http://localhost:8000/api/user/friend/${userId}/`, {
+        headers: {
+          Authorization: `Token ${token}`,
+        },
+      });
+
+      console.log(resFriend.data);
+      console.log(
+        resFriend.data.map((friend) => {
+          return friend.img;
+        })
+      );
+      console.log(resUser.data.img);
 
       setShowProfile(resPro.data);
       setShowUser(resUser.data);
+      setFriends(resFriend.data);
     } catch {
       console.log('error');
+    }
+  };
+
+  const getFriendList = async (id) => {
+    try {
+      const res = await axios.get(`http://localhost:8000/api/user/friend/${id}/`, {
+        headers: {
+          Authorization: `Token ${token}`,
+        },
+      });
+
+      console.log(res.data);
+      const friendsId = res.data.map((obj) => obj.askTo);
+      console.log(friendsId);
+
+      setFriends(friendsId);
+    } catch {
+      console.log('get friends error');
     }
   };
 
@@ -227,6 +261,7 @@ const ApiContextProvider = (props) => {
   };
 
   const newRequestFriend = async (askData) => {
+    console.log(askData);
     try {
       const res = await axios.post(`http://localhost:8000/api/user/approval/`, askData, {
         headers: {
@@ -236,6 +271,7 @@ const ApiContextProvider = (props) => {
       });
       setAskListFull([...askListFull, res.data]);
     } catch {
+      console.log(askData);
       console.log('error');
     }
   };
@@ -329,6 +365,8 @@ const ApiContextProvider = (props) => {
         editProfile,
         editUserInfo,
         getSpecificUserProfileInfo,
+        getFriendList,
+        friends,
       }}
     >
       {props.children}
