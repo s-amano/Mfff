@@ -13,7 +13,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const AskModal = ({ ask, askFromUser }) => {
+const AskModal = ({ ask, askFromUser, modalIsOpen, setModalIsOpen }) => {
   const classes = useStyles();
   const { user, profile, profiles, users, askList, changeApprovalRequest } = useContext(ApiContext);
 
@@ -22,6 +22,7 @@ const AskModal = ({ ask, askFromUser }) => {
     uploadDataAsk.append('askTo', ask.askTo);
     uploadDataAsk.append('approved', true);
     changeApprovalRequest(uploadDataAsk, ask);
+    setModalIsOpen(false);
   };
 
   return (

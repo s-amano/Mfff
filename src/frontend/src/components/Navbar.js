@@ -80,6 +80,8 @@ const Navbar = (props) => {
                   askFromUser={users.filter((item) => {
                     return item.id === ask.askFrom;
                   })}
+                  modalIsOpen={modalIsOpen}
+                  setModalIsOpen={setModalIsOpen}
                 />
               ))}
           </ul>

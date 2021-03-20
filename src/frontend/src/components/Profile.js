@@ -36,13 +36,20 @@ const useStyles = makeStyles((theme) => ({
 
 const Profile = ({ profileData, userData, askData }) => {
   const classes = useStyles();
-  const { newRequestFriend, profile, setSelectedProfile, setSelectedUser, getSpecificUserProfileInfo } = useContext(
-    ApiContext
-  );
+  const {
+    newRequestFriend,
+    profile,
+    setSelectedProfile,
+    setSelectedUser,
+    getSpecificUserProfileInfo,
+    getFriendList,
+  } = useContext(ApiContext);
 
   const newRequest = () => {
     const askUploadData = new FormData();
     askUploadData.append('askTo', profileData.userPro);
+    console.log(askUploadData);
+    console.log(profileData.userPro);
     newRequestFriend(askUploadData);
   };
 
@@ -59,6 +66,7 @@ const Profile = ({ profileData, userData, askData }) => {
           <Typography variant="h6">名前: {userData.username}</Typography>
           <Typography>age: {userData.age}</Typography>
         </CardContent>
+
         <CardActions>
           {!askData[0] && profile.id ? (
             <Button
