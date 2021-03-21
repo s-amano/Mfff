@@ -140,7 +140,7 @@ const ProfileInfo = () => {
             )}
           </Grid>
 
-          <Grid item xs={6}>
+          <Grid item xs={4}>
             {userEditing ? (
               <>
                 <TextField
@@ -163,27 +163,40 @@ const ProfileInfo = () => {
               </>
             )}
           </Grid>
-          <Grid item xs={2}>
+          <Grid item xs={3}>
             <AvatarGroup max={4}>
               {friends.map((friend) => (
                 <Avatar key={friend.id} src={'http://localhost:8000' + friend.img} />
               ))}
             </AvatarGroup>
           </Grid>
-          <Grid item xs={2}>
-            {user.id === showUser.id ? (
-              <Button size="large" variant="contained" color="secondary" onClick={() => setUserEditing(!userEditing)}>
-                編集する
+          <Grid item xs={3}>
+            {user.id === showUser.id && (
+              <Button
+                style={{ marginBottom: '3%' }}
+                size="large"
+                variant="contained"
+                color="secondary"
+                onClick={() => setUserEditing(!userEditing)}
+              >
+                自分のユーザー情報を編集する
               </Button>
-            ) : (
+            )}
+            {user.id != showUser.id &&
+            user.id ==
+              friends.map((friend) => {
+                return friend.id;
+              }) ? (
               <Button
                 size="large"
                 variant="contained"
                 color="secondary"
                 onClick={() => setProfileEditing(!profileEditing)}
               >
-                編集する
+                友達のプロフィールを編集する
               </Button>
+            ) : (
+              <></>
             )}
           </Grid>
         </Grid>
