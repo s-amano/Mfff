@@ -10,6 +10,7 @@ import Main from './components/Main';
 import ProfileInfo from './components/ProfileInfo';
 import { Route, BrowserRouter } from 'react-router-dom';
 import Login from './components/Login';
+import Register from './components/Register';
 
 const theme = createMuiTheme({
   palette: {
@@ -33,6 +34,7 @@ function App() {
           <Navbar />
           <div className="container">
             <Route exact path="/" component={Login} />
+            <Route exact path="/register" component={Register} />
             <Route exact path="/profiles" component={Main} />
             <Route exact path="/profile-info" component={ProfileInfo} />
           </div>

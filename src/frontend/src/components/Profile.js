@@ -89,7 +89,7 @@ const Profile = ({ profileData, userData, askData }) => {
               className={classes.button}
               variant="contained"
               color="primary"
-              onClick={() => getSpecificUserProfileInfo(userData.id, profileData.id)}
+              onClick={() => getSpecificUserProfileInfo(userData.id)}
               style={{ flex: 1 }}
             >
               プロフィール

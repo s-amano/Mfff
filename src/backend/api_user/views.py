@@ -15,6 +15,15 @@ class CreateUserView(generics.CreateAPIView):
     serializer_class = serializers.UserSerializer
 
 
+class CreateProfileView(generics.CreateAPIView):
+    serializer_class = serializers.ProfileSerializer
+    authentication_classes = (authentication.TokenAuthentication,)
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def perform_create(self, serializer):
+        serializer.save(userPro=self.request.user)
+
+
 class UpdateUserView(generics.UpdateAPIView):
     queryset = User.objects.all()
     serializer_class = serializers.UserSerializer
@@ -66,15 +75,35 @@ class FriendList(views.APIView):
         return Response(serializer.data)
 
 
+class ProfileInfoViewSet(generics.ListAPIView):
+    queryset = Profile.objects.all()
+    serializer_class = serializers.ProfileSerializer
+
+    def get_queryset(self):
+        userId = self.kwargs['pk']
+        return self.queryset.filter(userPro=userId)
+
+
 class ProfileViewSet(viewsets.ModelViewSet):
     queryset = Profile.objects.all()
     serializer_class = serializers.ProfileSerializer
     authentication_classes = (authentication.TokenAuthentication,)
-    permission_classes = (permissions.IsAuthenticated,
-                          custompermissions.ProfilePermission)
+    permission_classes = (permissions.IsAuthenticated,)
 
     def perform_create(self, serializer):
         serializer.save(userPro=self.request.user)
+
+    # def get_object(self):
+    #     userId = self.kwargs['pk']
+    #     print(userId)
+    #     queryset = self.queryset.filter(userPro=userId)
+
+    # def retrieve(self, request, *args, **kwargs):
+    #     userId = self.kwargs['pk']
+    #     queryset = self.queryset.filter(userPro=userId)
+    #     instance = self.filter_queryset(queryset)
+    #     serializer = self.get_serializer(instance)
+    #     return Response(serializer.data)
 
 
 class UserViewSet(viewsets.ModelViewSet):
