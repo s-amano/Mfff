@@ -69,7 +69,12 @@ const Navbar = (props) => {
           <NotificationsIcon onClick={() => setModalIsOpen(true)} />
         </Badge>
 
-        <Modal isOpen={modalIsOpen} onRequestClose={() => setModalIsOpen(false)} style={customStyles}>
+        <Modal
+          ariaHideApp={false}
+          isOpen={modalIsOpen}
+          onRequestClose={() => setModalIsOpen(false)}
+          style={customStyles}
+        >
           <Typography>友達申請</Typography>
           <ul>
             {profile.id &&

@@ -130,19 +130,6 @@ const Login = (props) => {
           headers: { 'Content-Type': 'application/json' },
         });
         props.cookies.set('current-token', res.data.token);
-        // const resmy = await axios.get('http://localhost:8000/api/user/myprofile/', {
-        //   headers: {
-        //     Authorization: `Token ${res.data.token}`,
-        //   },
-        // });
-        // if (!resmy.data[0]) {
-        //   const createData = new FormData();
-        //   createData.append('nickName', '');
-        //   await axios.post('http://localhost:8000/api/user/profile/create/', createData, {
-        //     headers: { 'Content-Type': 'application/json' },
-        //     Authorization: `Token ${res.data.token}`,
-        //   });
-        // }
         res.data.token ? (window.location.href = '/profiles') : (window.location.href = '/');
         dispatch({ type: FETCH_SUCCESS });
       } catch {
@@ -154,6 +141,7 @@ const Login = (props) => {
         await axios.post('http://localhost:8000/api/user/create/', state.credentialsReg, {
           headers: { 'Content-Type': 'application/json' },
         });
+        // (window.location.href = '/regiser')
 
         dispatch({ type: FETCH_SUCCESS });
         dispatch({ type: TOGGLE_MODE });
