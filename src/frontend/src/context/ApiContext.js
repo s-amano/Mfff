@@ -26,6 +26,7 @@ const ApiContextProvider = (props) => {
 
   useEffect(() => {
     console.log('effect');
+    console.log(props.cookies.get('current-token'));
     let mounted = true;
 
     // 自分のユーザー情報を取得
