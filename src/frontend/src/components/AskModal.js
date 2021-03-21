@@ -27,12 +27,23 @@ const AskModal = ({ ask, askFromUser, modalIsOpen, setModalIsOpen }) => {
 
   return (
     <>
-      <li class="list-item">
-        <h4>{askFromUser[0].username}</h4>
-        <Button size="small" className="btn-modal" variant="contained" color="primary" onClick={() => changeApproval()}>
-          承認する
-        </Button>
-      </li>
+      {!ask.approved ? (
+        <li className="list-item">
+          <h4 style={{ marginRight: '3%' }}>{askFromUser[0].username}</h4>
+
+          <Button
+            size="small"
+            className="btn-modal"
+            variant="contained"
+            color="primary"
+            onClick={() => changeApproval()}
+          >
+            承認する
+          </Button>
+        </li>
+      ) : (
+        <></>
+      )}
     </>
   );
 };

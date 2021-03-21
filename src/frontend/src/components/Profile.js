@@ -48,8 +48,8 @@ const Profile = ({ profileData, userData, askData }) => {
   const newRequest = () => {
     const askUploadData = new FormData();
     askUploadData.append('askTo', profileData.userPro);
-    console.log(askUploadData);
-    console.log(profileData.userPro);
+    // console.log(askUploadData);
+    // console.log(profileData.userPro);
     newRequestFriend(askUploadData);
   };
 
