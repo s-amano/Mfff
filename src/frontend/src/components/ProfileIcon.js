@@ -7,12 +7,7 @@ const ProfileIcon = ({ userImg }) => {
   const { user, profile, setSelectedProfile, setSelectedUser, getSpecificUserProfileInfo } = useContext(ApiContext);
 
   return (
-    <Button
-      size="small"
-      className="Icon"
-      onClick={() => getSpecificUserProfileInfo(user.id, profile.id)}
-      style={{ flex: 1 }}
-    >
+    <Button size="small" className="Icon" onClick={() => getSpecificUserProfileInfo(user.id)} style={{ flex: 1 }}>
       <Avatar alt="profile icon" src={userImg} />
     </Button>
   );

@@ -11,6 +11,9 @@ router.register('user', views.UserViewSet)
 
 urlpatterns = [
     path('create/', views.CreateUserView.as_view(), name='create'),
+    path('myprofile/create/', views.CreateProfileView.as_view(),
+         name='createmyprofile'),
+    path('profinfo/<int:pk>/', views.ProfileInfoViewSet.as_view(), name='profinfo'),
     path('update/<int:pk>/', views.UpdateUserView.as_view(), name='update'),
     path('myprofile/', views.MyProfileListView.as_view(), name='myprofile'),
     path('myuser/', views.MyUserView.as_view(), name='myuser'),
