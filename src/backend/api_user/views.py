@@ -11,6 +11,20 @@ from rest_framework.response import Response
 from core import custompermissions
 
 
+# class CreateUserView(views.APIView):
+
+#     def post(self, request, *args, **kwargs):
+#         user_serializer = serializers.UserSerializer(data=request.data)
+#         user_serializer.is_valid(raise_exception=True)
+#         user_serializer.save()
+
+#         profile_serializer = serializers.ProfileSerializer(
+#             userPro=request.user)
+#         profile_serializer.is_valid(raise_exception=True)
+#         profile_serializer.save()
+
+#         return Response(user_serializer.data)
+
 class CreateUserView(generics.CreateAPIView):
     serializer_class = serializers.UserSerializer
 

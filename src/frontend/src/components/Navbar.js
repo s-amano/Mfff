@@ -25,7 +25,7 @@ const useStyles = makeStyles((theme) => ({
 
 const Navbar = (props) => {
   // Modal.setAppElement("#root");
-  const { user, profile, profiles, users, askList, changeApprovalRequest } = useContext(ApiContext);
+  const { token, user, profile, profiles, users, askList, changeApprovalRequest } = useContext(ApiContext);
 
   const [modalIsOpen, setModalIsOpen] = useState(false);
 
@@ -41,58 +41,66 @@ const Navbar = (props) => {
   const classes = useStyles();
   return (
     <AppBar position="static">
-      <Toolbar>
-        <Typography variant="h5" className={classes.title}>
-          <Link to="/profiles" style={{ textDecoration: 'none', color: 'white' }}>
-            Make friends with friends of friends!!
+      {props.cookies.get('current-token') ? (
+        <Toolbar>
+          <Typography variant="h5" className={classes.title}>
+            <Link to="/profiles" style={{ textDecoration: 'none', color: 'white' }}>
+              Make friends with friends of friends!!
+            </Link>
+          </Typography>
+
+          <Link to="/profile-info" style={{ textDecoration: 'none', color: 'white' }}>
+            <ProfileIcon userImg={user.img} />
           </Link>
-        </Typography>
 
-        <Link to="/profile-info" style={{ textDecoration: 'none', color: 'white' }}>
-          <ProfileIcon userImg={user.img} />
-        </Link>
+          <Badge
+            className={classes.bg}
+            badgeContent={
+              askList.filter((ask) => {
+                return (
+                  ask.approved === false &&
+                  profiles.filter((item) => {
+                    return item.userPro === ask.askFrom;
+                  })[0]
+                );
+              }).length
+            }
+            color="secondary"
+          >
+            <NotificationsIcon onClick={() => setModalIsOpen(true)} />
+          </Badge>
 
-        <Badge
-          className={classes.bg}
-          badgeContent={
-            askList.filter((ask) => {
-              return (
-                ask.approved === false &&
-                profiles.filter((item) => {
-                  return item.userPro === ask.askFrom;
-                })[0]
-              );
-            }).length
-          }
-          color="secondary"
-        >
-          <NotificationsIcon onClick={() => setModalIsOpen(true)} />
-        </Badge>
-
-        <Modal
-          ariaHideApp={false}
-          isOpen={modalIsOpen}
-          onRequestClose={() => setModalIsOpen(false)}
-          style={customStyles}
-        >
-          <Typography>友達申請</Typography>
-          <ul>
-            {profile.id &&
-              askList.map((ask) => (
-                <AskModal
-                  key={ask.id}
-                  ask={ask}
-                  askFromUser={users.filter((item) => {
-                    return item.id === ask.askFrom;
-                  })}
-                  modalIsOpen={modalIsOpen}
-                  setModalIsOpen={setModalIsOpen}
-                />
-              ))}
-          </ul>
-        </Modal>
-        <LogoutButton />
-      </Toolbar>
+          <Modal
+            ariaHideApp={false}
+            isOpen={modalIsOpen}
+            onRequestClose={() => setModalIsOpen(false)}
+            style={customStyles}
+          >
+            <Typography>友達申請</Typography>
+            <ul>
+              {profile.id &&
+                askList.map((ask) => (
+                  <AskModal
+                    key={ask.id}
+                    ask={ask}
+                    askFromUser={users.filter((item) => {
+                      return item.id === ask.askFrom;
+                    })}
+                    modalIsOpen={modalIsOpen}
+                    setModalIsOpen={setModalIsOpen}
+                  />
+                ))}
+            </ul>
+          </Modal>
+          <LogoutButton />
+        </Toolbar>
+      ) : (
+        <Toolbar>
+          <Typography variant="h5" className={classes.title}>
+            Make friends with friends of friends!!
+          </Typography>
+        </Toolbar>
+      )}
     </AppBar>
   );
 };

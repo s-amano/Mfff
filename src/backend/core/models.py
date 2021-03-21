@@ -25,14 +25,15 @@ class UserManager(BaseUserManager):
         user = self.create_user(email, password)
         user.is_staff = True
         user.is_superuser = True
-        user.save(using= self._db)
+        user.save(using=self._db)
 
         return user
 
 
 class User(AbstractBaseUser, PermissionsMixin):
 
-    username = models.CharField(blank=False, null=False, max_length=50, default='',)
+    username = models.CharField(
+        blank=False, null=False, max_length=50, default='',)
     age = models.IntegerField(default=20, blank=True, null=True,)
     email = models.EmailField(max_length=50, unique=True)
     img = models.ImageField(blank=True, null=True, upload_to=upload_path)
@@ -48,7 +49,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 
 class Profile(models.Model):
-    nickName = models.CharField(max_length=20)
+    nickName = models.CharField(null=True, max_length=20)
     userPro = models.OneToOneField(
         settings.AUTH_USER_MODEL, related_name='userPro',
         on_delete=models.CASCADE
